@@ -61,10 +61,10 @@ contract Tether {
         uint256 _value
     ) public returns (bool ok) {
         require(balanceOf[_from] >= _value, "Insufficient balance");
-        require(allowance[msg.sender][_from] >= _value, "Allowance exceeded");
+        require(allowance[_from][msg.sender] >= _value, "Allowance exceeded");
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
-        allowance[msg.sender][_from] -= _value;
+        allowance[_from][msg.sender] -= _value;
         emit Transfer(_from, _to, _value);
         return true;
     }
