@@ -26,7 +26,7 @@ contract Tether {
     // It allows an account (_owner) to give permission to another account (_spender) to spend a certain amount of tokens on its behalf.
     // The first address represents the owner of the tokens.
     // The second address represents the spender.
-    mapping(address => mapping(address => uint256)) public allowance;
+    mapping(address => mapping(address => uint256)) public allowance; // allowance[owner][spender]
 
     // Constructor assigns the total token supply to the contract deployer's address.
     constructor() public {

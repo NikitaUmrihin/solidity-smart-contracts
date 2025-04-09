@@ -10,7 +10,7 @@ contract DecentralBank {
     Tether public tether;
     Rwd public rwd;
 
-    address[] public stakers;
+    address[] stakers;
 
     mapping(address => uint) public stakingBalance;
     mapping(address => bool) public hasStaked;
@@ -21,6 +21,7 @@ contract DecentralBank {
         tether = _tether;
     }
 
+    // Deposit fUSDT to bank
     function deposit(uint _amount) public {
         require(_amount > 0, "Amount has to be bigger than zero");
 

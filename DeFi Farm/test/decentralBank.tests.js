@@ -29,6 +29,7 @@ contract('DecentralBank', accounts =>  {
 
         // Send 100 fUSDT to customer
         await tether.transfer(accounts[1], tokens('100'), {from: accounts[0]});
+
     })
 
     //  Test Fake Tether Token Deployment
@@ -49,6 +50,7 @@ contract('DecentralBank', accounts =>  {
             assert.equal(name, "Rewardz Token")
             assert.equal(symbol, "RWD")
         })
+
     })
      
     // Test Decentral Bank Deployment
@@ -83,6 +85,7 @@ contract('DecentralBank', accounts =>  {
             balance = await tether.balanceOf(accounts[1])
             assert.equal(balance.toString(), tokens('50'), 'customer wallet after deposit')
         })
+
         // Test customer staking status
         it('customer staking status', async () => {
             staking = await bank.isStaking(accounts[1])
