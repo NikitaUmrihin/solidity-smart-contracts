@@ -26,7 +26,7 @@ contract Tether {
     // It allows an account (_owner) to give permission to another account (_spender) to spend a certain amount of tokens on its behalf.
     // The first address represents the owner of the tokens.
     // The second address represents the spender.
-    mapping(address => mapping(address => uint256)) public allowance;
+    mapping(address => mapping(address => uint256)) public allowance; // allowance[owner][spender]
 
     // Constructor assigns the total token supply to the contract deployer's address.
     constructor() public {
@@ -61,10 +61,10 @@ contract Tether {
         uint256 _value
     ) public returns (bool ok) {
         require(balanceOf[_from] >= _value, "Insufficient balance");
-        require(allowance[msg.sender][_from] >= _value, "Allowance exceeded");
+        require(allowance[_from][msg.sender] >= _value, "Allowance exceeded");
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
-        allowance[msg.sender][_from] -= _value;
+        allowance[_from][msg.sender] -= _value;
         emit Transfer(_from, _to, _value);
         return true;
     }
