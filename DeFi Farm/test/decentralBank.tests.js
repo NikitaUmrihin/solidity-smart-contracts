@@ -87,7 +87,7 @@ contract('DecentralBank', accounts =>  {
         })
 
         // Test customer staking status
-        it('deposit funds', async () => {
+        it('customer staking status', async () => {
             staking = await bank.isStaking(accounts[1])
             assert.equal(staking.toString(), 'true', 'customer staking status')
         })
