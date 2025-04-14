@@ -10,7 +10,7 @@ contract DecentralBank {
     Tether public tether;
     Rwd public rwd;
 
-    address[] stakers;
+    address[] public stakers;
 
     mapping(address => uint) public stakingBalance;
     mapping(address => bool) public hasStaked;
@@ -19,6 +19,7 @@ contract DecentralBank {
     constructor(Rwd _rwd, Tether _tether) public {
         rwd = _rwd;
         tether = _tether;
+        owner = msg.sender;
     }
 
     // Deposit fUSDT to bank
@@ -36,5 +37,39 @@ contract DecentralBank {
         stakingBalance[msg.sender] += _amount;
         isStaking[msg.sender] = true;
         hasStaked[msg.sender] = true;
+    }
+
+    // Withdraw fUSDT from bank
+    function withdraw(uint _amount) public {
+        require(_amount > 0, "Amount has to be bigger than zero");
+        require(isStaking[msg.sender] = true, "User is not staking");
+
+        uint balance = stakingBalance[msg.sender];
+        require(balance > 0, "User is not staking");
+
+        require(balance >= _amount, "Amount is greater than balance");
+
+        bool ok = tether.transfer(msg.sender, _amount);
+        require(ok, "Transfer failed");
+
+        // Update staking balance and flags
+        stakingBalance[msg.sender] -= _amount;
+        if (stakingBalance[msg.sender] == 0) {
+            isStaking[msg.sender] = false;
+        }
+    }
+
+    function issueTokens() public {
+        // Only owner can issue tokens
+        require(msg.sender == owner, "caller must be owner");
+
+        // Transfer tokens to stakers
+        for (uint i = 0; i < stakers.length; i++) {
+            address recipient = stakers[i];
+            uint balance = stakingBalance[recipient] / 10;
+            if (balance > 0) {
+                rwd.transfer(recipient, balance);
+            }
+        }
     }
 }
