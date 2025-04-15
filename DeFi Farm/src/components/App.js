@@ -1,13 +1,14 @@
 import React from 'react';
+import Navbar from './Navbar';
+import { useState } from 'react';
 
 const App = () => {
+
+    const [account, setAccount] = useState("0x0");
+
     return (
         <div>
-            <h1>
-                <center>
-                    Hello
-                </center>
-            </h1>
+            <Navbar account={account}/>
         </div>
     )
 }
