@@ -3,6 +3,8 @@ import Navbar from './Navbar';
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import Tether from '../truffle_abis/Tether.json';
+import Rwd from '../truffle_abis/Rwd.json';
+import Bank from '../truffle_abis/DecentralBank.json';
 
 const App = () => {
 
@@ -23,6 +25,7 @@ const App = () => {
 
     useEffect(() => {
         const init = async () => {
+            setIsLoading(true)
             try {
                 const w3 = await loadWeb3()
                 setWeb3(w3)
@@ -50,6 +53,8 @@ const App = () => {
     }
 
     const loadBlockchainData = async (web3) => {
+        setIsLoading(true)
+
         const accounts = await web3.eth.getAccounts()
         setAccount(accounts[0])
 
@@ -57,6 +62,8 @@ const App = () => {
         console.log("Network ID: ", networkId)
 
         const tetherData = Tether.networks[networkId]
+        const rwdData = Rwd.networks[networkId]
+        const bankData = Bank.networks[networkId]
 
         // Load Tether contract
         if (tetherData) {
@@ -64,10 +71,34 @@ const App = () => {
             setTether(tetherInstance)
             const balance = await tetherInstance.methods.balanceOf(account).call()
             setTetherBalance(balance.toString())
-            console.log(tetherBalance)
+            console.log("fUSDT: ", tetherBalance)
         } else {
-            window.alert("Error! Couldn't load Tether smart contract")
+            window.alert("Error! Couldn't deploy Tether smart contract")
         }
+
+        // Load RWD contract
+        if (rwdData) {
+            const rwdInstance = new web3.eth.Contract(Rwd.abi, rwdData.address)
+            setRwd(rwdInstance)
+            const balance = await rwdInstance.methods.balanceOf(account).call()
+            setRwdBalance(balance.toString())
+            console.log("RWD: ", rwdBalance)
+        } else {
+            window.alert("Error! Couldn't deploy Rwd smart contract")
+        }
+
+        // Load Decentral Bank contract
+        if (bankData) {
+            const bankInstance = new web3.eth.Contract(Bank.abi, bankData.address)
+            setBank(bankInstance)
+            const balance = await bankInstance.methods.stakingBalance(account).call({ from: account })
+            setStakingBalance(balance.toString())
+            console.log("Staking: ", balance.toString())
+        } else {
+            window.alert("Error! Couldn't deploy Decentral Bank smart contract")
+        }
+        
+        setIsLoading(false)
     }
 
 
@@ -78,7 +109,23 @@ const App = () => {
             <center>
                 {isLoading? 
                     <p>Loading dApp...</p> : 
-                    <p>Your fUSDT balance: {tetherBalance/10**18}</p>
+                    <div>
+                        <p>
+                            Your balance: 
+                            <b><p>
+                                {tetherBalance/10**18} fUSDT
+                                <br/>
+                                {rwdBalance/10**18} RWD
+                                
+                            </p></b>
+                        </p>
+                        <p>
+                            Staking balance: 
+                            <b><p>
+                                {stakingBalance/10**18} fUSDT                                
+                            </p></b>
+                        </p>
+                    </div>
                 }
             </center>
         </div>
