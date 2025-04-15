@@ -17,8 +17,8 @@ const App = () => {
     const [bank, setBank] = useState({});
     // Balances
     const [tetherBalance, setTetherBalance] = useState("");
-    const [rwdBalance, setRwdBalance] = useState({});
-    const [stakingBalance, setStakingBalance] = useState({});
+    const [rwdBalance, setRwdBalance] = useState("");
+    const [stakingBalance, setStakingBalance] = useState("");
     
     const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +40,6 @@ const App = () => {
 
 
     const loadWeb3 = async () => {
-        setIsLoading(true)
         if (window.ethereum) {
             const web3 = new Web3(window.ethereum)
             await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -50,14 +49,14 @@ const App = () => {
         } else {
             window.alert("No ETH wallet detected!\n http://metamask.io/")
         }
-        setIsLoading(false)
     }
 
     const loadBlockchainData = async (web3) => {
         setIsLoading(true)
 
         const accounts = await web3.eth.getAccounts()
-        setAccount(accounts[0])
+        const userAccount = accounts[0]
+        setAccount(userAccount)
 
         const networkId = await web3.eth.net.getId()
         console.log("Network ID: ", networkId)
@@ -70,7 +69,7 @@ const App = () => {
         if (tetherData) {
             const tetherInstance = new web3.eth.Contract(Tether.abi, tetherData.address)
             setTether(tetherInstance)
-            const balance = await tetherInstance.methods.balanceOf(account).call()
+            const balance = await tetherInstance.methods.balanceOf(userAccount).call()
             setTetherBalance(balance.toString())
             console.log("fUSDT: ", tetherBalance)
         } else {
@@ -81,9 +80,9 @@ const App = () => {
         if (rwdData) {
             const rwdInstance = new web3.eth.Contract(Rwd.abi, rwdData.address)
             setRwd(rwdInstance)
-            const balance = await rwdInstance.methods.balanceOf(account).call()
+            const balance = await rwdInstance.methods.balanceOf(userAccount).call()
             setRwdBalance(balance.toString())
-            console.log("RWD: ", rwdBalance)
+            console.log("RWD: ", balance.toString())
         } else {
             window.alert("Error! Couldn't deploy Rwd smart contract")
         }
@@ -92,14 +91,12 @@ const App = () => {
         if (bankData) {
             const bankInstance = new web3.eth.Contract(Bank.abi, bankData.address)
             setBank(bankInstance)
-            const balance = await bankInstance.methods.stakingBalance(account).call({ from: account })
+            const balance = await bankInstance.methods.stakingBalance(userAccount).call({ from: account })
             setStakingBalance(balance.toString())
             console.log("Staking: ", balance.toString())
         } else {
             window.alert("Error! Couldn't deploy Decentral Bank smart contract")
         }
-        
-        setIsLoading(false)
     }
 
 
@@ -111,21 +108,21 @@ const App = () => {
                 {isLoading? 
                     <p>Loading dApp...</p> : 
                     <div>
-                        <p>
-                            Your balance: 
-                            <b><p>
-                                {tetherBalance/10**18} fUSDT
-                                <br/>
-                                {rwdBalance/10**18} RWD
-                                
-                            </p></b>
-                        </p>
-                        <p>
-                            Staking balance: 
-                            <b><p>
-                                {stakingBalance/10**18} fUSDT                                
-                            </p></b>
-                        </p>
+                        Your balance:
+                        <br/>
+                        <b>
+                            {tetherBalance / 10 ** 18} fUSDT
+                            <br/>
+                            {rwdBalance / 10 ** 18} RWD
+                        </b>
+                        <br/>
+                        <br/>
+                        Staking balance:
+                        <br/>
+                        <b>
+                            {stakingBalance/10**18} fUSDT                                
+                        </b>
+                        
                     </div>
                 }
             </center>
