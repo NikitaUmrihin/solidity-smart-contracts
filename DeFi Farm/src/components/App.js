@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import Tether from '../truffle_abis/Tether.json';
 import Rwd from '../truffle_abis/Rwd.json';
 import Bank from '../truffle_abis/DecentralBank.json';
+import Main from './Main'
 
 const App = () => {
 
@@ -23,21 +24,6 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
 
 
-    useEffect(() => {
-        const init = async () => {
-            try {
-                const w3 = await loadWeb3()
-                setWeb3(w3)
-                await loadBlockchainData(w3)
-            } catch (e) {
-                console.error("Error initializing dApp:", e)
-            } finally {
-                setIsLoading(false)
-            }
-        };
-        init();
-    }, []);
-
 
     const loadWeb3 = async () => {
         if (window.ethereum) {
@@ -51,9 +37,8 @@ const App = () => {
         }
     }
 
-    const loadBlockchainData = async (web3) => {
-        setIsLoading(true)
 
+    const loadBlockchainData = async (web3) => {
         const accounts = await web3.eth.getAccounts()
         const userAccount = accounts[0]
         setAccount(userAccount)
@@ -99,32 +84,55 @@ const App = () => {
         }
     }
 
+    
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const w3 = await loadWeb3()
+                setWeb3(w3)
+                await loadBlockchainData(w3)
+            } catch (e) {
+                console.error("Error initializing dApp:", e)
+            } finally {
+                setIsLoading(false)
+            }
+        };
+        init();
+    }, [loadBlockchainData]);
+
+
 
     return (
         <div>
             <Navbar account={account}/>
             <br/><br/>
             <center>
-                {isLoading? 
-                    <p>Loading dApp...</p> : 
+                {isLoading || !web3?
+                    <div id="loadspinner">
+                        <br/><br/><br/> 
+                        <div class="spinner-border" style={{width: '3rem', height: '3rem'}} role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                :
                     <div>
-                        Your balance:
-                        <br/>
-                        <b>
-                            {tetherBalance / 10 ** 18} fUSDT
-                            <br/>
-                            {rwdBalance / 10 ** 18} RWD
-                        </b>
-                        <br/>
-                        <br/>
-                        Staking balance:
-                        <br/>
-                        <b>
-                            {stakingBalance/10**18} fUSDT                                
-                        </b>
-                        
+                        <div className='container-fluid mt-5 d-flex justify-content-center'>
+                            <div className='row'>
+                                <main role='main' className='col-lg-12 ml-auto mr-auto' style={{maxWidth:'600px', minHeight:'100vh'}}>
+                                    <div>
+                                        <Main
+                                        web3={web3} 
+                                        tetherBalance={tetherBalance} 
+                                        rwdBalance={rwdBalance} 
+                                        stakingBalance={stakingBalance}
+                                        />
+                                    </div>
+                                </main>
+                            </div>
+                        </div>
                     </div>
                 }
+
             </center>
         </div>
     )
