@@ -5282,6 +5282,69 @@
     "version": "0.5.17+commit.d19bba13.Emscripten.clang"
   },
   "networks": {
+    "1337": {
+      "events": {
+        "0xfa07013316165a7c424e6be19a166ba4784477c405b341b4bb535985391e7baa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_spender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "message",
+              "type": "string"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        },
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x281dB350a0Cda0886FE1D85c0eD59202fE3d82C6",
+      "transactionHash": "0xb465285b33bd7c3d733b94ba65c4292f1ae02ab35fd99531d81dfe908d61adbb"
+    },
     "5777": {
       "events": {
         "0xfa07013316165a7c424e6be19a166ba4784477c405b341b4bb535985391e7baa": {
@@ -5347,7 +5410,7 @@
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-04-15T00:54:59.671Z",
+  "updatedAt": "2025-04-15T05:14:57.465Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
