@@ -29,7 +29,6 @@ contract('DecentralBank', accounts =>  {
 
         // Send 100 fUSDT to customer
         await tether.transfer(accounts[1], tokens('100'), {from: accounts[0]});
-
     })
 
     //  Test Fake Tether Token Deployment
@@ -50,7 +49,6 @@ contract('DecentralBank', accounts =>  {
             assert.equal(name, "Rewardz Token")
             assert.equal(symbol, "RWD")
         })
-
     })
      
     // Test Decentral Bank Deployment
@@ -73,23 +71,57 @@ contract('DecentralBank', accounts =>  {
             let balance = await tether.balanceOf(accounts[1])
             assert.equal(balance.toString(), tokens('100'), 'customer wallet before staking')
         })
+
         // Test allowance approval
         it('set allowance', async () => {
             await tether.approve(bank.address, tokens('50'), {from: accounts[1]})
             allowance = await tether.allowance(accounts[1], bank.address)
             assert.equal(allowance.toString(), tokens('50'), 'approve allowance')
         })
+
         // Test customer fUSDT balance after deposit
-        it('deposit funds', async () => {
+        it('deposit customer funds (stake)', async () => {
             await bank.deposit(tokens('50'), {from: accounts[1]})
             balance = await tether.balanceOf(accounts[1])
-            assert.equal(balance.toString(), tokens('50'), 'customer wallet after deposit')
+            assert.equal(balance.toString(), tokens('50'), 'customer balance after staking')
         })
 
         // Test customer staking status
-        it('customer staking status', async () => {
+        it('check staking status', async () => {
             staking = await bank.isStaking(accounts[1])
             assert.equal(staking.toString(), 'true', 'customer staking status')
         })
+        
+        // Issue tokens
+        it('issue reward tokens', async () => {
+            
+            // Make sure only owner can issue tokens
+            await bank.issueTokens({from: accounts[1]}).should.be.rejected
+            
+            await bank.issueTokens({from: accounts[0]})
+            balance = await rwd.balanceOf(accounts[1])
+            assert.equal(balance.toString(), tokens('5'), 'customer receiving reward tokens')
+        })
+
+        // Test customer fUSDT balance after withdrawal
+        it('withdraw customer funds (unstake)', async () => {
+            await bank.withdraw(tokens('50'), {from: accounts[1]})
+            balance = await tether.balanceOf(accounts[1])
+            assert.equal(balance.toString(), tokens('100'), 'customer personal balance after unstaking')
+
+            balance = await bank.stakingBalance(accounts[1])
+            assert.equal(balance.toString(), tokens('0'), 'bank balance after unstaking')
+
+            balance = await tether.balanceOf(bank.address)
+            assert.equal(balance.toString(), tokens('0'), 'customer staking balance after unstaking')
+            
+        })
+
+        // Test customer staking status
+        it('check staking status', async () => {
+            staking = await bank.isStaking(accounts[1])
+            assert.equal(staking.toString(), 'false', 'customer staking status')
+        })
+
     })    
 })
