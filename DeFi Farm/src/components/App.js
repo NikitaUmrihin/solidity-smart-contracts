@@ -25,7 +25,6 @@ const App = () => {
 
     useEffect(() => {
         const init = async () => {
-            setIsLoading(true)
             try {
                 const w3 = await loadWeb3()
                 setWeb3(w3)
@@ -41,6 +40,7 @@ const App = () => {
 
 
     const loadWeb3 = async () => {
+        setIsLoading(true)
         if (window.ethereum) {
             const web3 = new Web3(window.ethereum)
             await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -50,6 +50,7 @@ const App = () => {
         } else {
             window.alert("No ETH wallet detected!\n http://metamask.io/")
         }
+        setIsLoading(false)
     }
 
     const loadBlockchainData = async (web3) => {
