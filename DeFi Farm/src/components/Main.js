@@ -1,5 +1,5 @@
 import tether from '../images/tether.png'
-const Main = ({ web3, tetherBalance, rwdBalance, stakingBalance, stakeTokens }) => {
+const Main = ({ web3, tetherBalance, rwdBalance, stakingBalance, stakeTokens, unstakeTokens }) => {
 
     return (
         <div id="content" className="mt-4">
@@ -50,7 +50,15 @@ const Main = ({ web3, tetherBalance, rwdBalance, stakingBalance, stakeTokens }) 
                                 DEPOSIT
                             </button>
 
-                            <button type="button" className="btn btn-outline-light w-100 mt-2" >
+                            <button type="button" className="btn btn-outline-light w-100 mt-2" 
+                                    onClick={() => {
+                                        const input = document.getElementById('stake-amount')
+                                        let amount = input.value.toString()
+                                        amount = web3.utils.toWei(amount, 'ether')
+                                        console.log(`UNSTAKING ${amount}`)
+                                        unstakeTokens(amount)
+                                    }}
+                            >
                                 WITHDRAW
                             </button>
                         </div>
