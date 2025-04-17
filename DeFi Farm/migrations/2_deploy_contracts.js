@@ -15,6 +15,6 @@ module.exports = async function(deployer, network, accounts) {
     // Transfer all RWD tokens to Decentral Bank
     await rwd.transfer(bank.address, '1000000000000000000000000');
     
-    // Transfer 100 Tether to investor (Ganache account[1])
-    await tether.transfer(accounts[1], '100000000000000000000');
+    // Transfer 100 Tether to investor (Ganache account[0])
+    await tether.transfer(accounts[0], '100000000000000000000');
 };
