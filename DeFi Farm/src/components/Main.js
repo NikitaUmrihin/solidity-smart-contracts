@@ -3,20 +3,25 @@ const Main = ({ web3, tetherBalance, rwdBalance, stakingBalance, stakeTokens, un
 
     return (
         <div id="content" className="mt-4">
-            <table className="table table-bordered table-hover text-center text-light bg-dark">
-                <thead className="table-dark">
-                    <tr>
-                        <th scope="col">Staking Balance</th>
-                        <th scope="col">Reward Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{web3.utils.fromWei(stakingBalance, "ether")} fUSDT</td>
-                        <td>{web3.utils.fromWei(rwdBalance, "ether")} RWD</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div className="card bg-secondary bg-opacity-75 text-light mb-1">
+                <div className="card-body">            
+                <table className="table table-bordered table-hover text-center text-light bg-dark">
+                    <thead className="table-dark">
+                        <tr>
+                            <th scope="col">Staking Balance</th>
+                            <th scope="col">Reward Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{web3.utils.fromWei(stakingBalance, "ether")} fUSDT</td>
+                            <td>{web3.utils.fromWei(rwdBalance, "ether")} RWD</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            <br/>
 
             <div className="card bg-secondary bg-opacity-75 text-light mb-4">
                 <div className="card-body">
@@ -51,7 +56,8 @@ const Main = ({ web3, tetherBalance, rwdBalance, stakingBalance, stakeTokens, un
                             </button>
 
                             <button type="button" className="btn btn-outline-light w-100 mt-2" 
-                                    onClick={() => {
+                                    onClick={(event) => {
+                                        event.preventDefault()
                                         const input = document.getElementById('stake-amount')
                                         let amount = input.value.toString()
                                         amount = web3.utils.toWei(amount, 'ether')

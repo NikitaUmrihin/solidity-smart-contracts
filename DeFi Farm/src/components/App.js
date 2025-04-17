@@ -6,6 +6,7 @@ import Tether from '../truffle_abis/Tether.json';
 import Rwd from '../truffle_abis/Rwd.json';
 import Bank from '../truffle_abis/DecentralBank.json';
 import Main from './Main'
+import ParticleSettings from './ParticleSettings'
 
 const App = () => {
 
@@ -133,16 +134,16 @@ const App = () => {
     const unstakeTokens = (amount) => {
         setIsLoading(true)
 
-            bank.methods.withdraw(amount).send({from: account}).on("transactionHash", (hash) =>{
-                setIsLoading(false)
-            })
-        
-        setIsLoading(false)
-
+        bank.methods.withdraw(amount).send({from: account}).on("transactionHash", (hash) =>{
+            setIsLoading(false)
+        })
     }
 
     return (
-        <div>
+        <div className='App' style={{position:'relative'}}>
+            <div style={{position:'absolute'}}>
+                <ParticleSettings/>
+            </div>
             <Navbar account={account}/>
             <br/><br/>
             <center>
