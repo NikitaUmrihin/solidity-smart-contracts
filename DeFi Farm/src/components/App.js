@@ -129,6 +129,17 @@ const App = () => {
         })
     }
 
+    // Unstaking function
+    const unstakeTokens = (amount) => {
+        setIsLoading(true)
+
+            bank.methods.withdraw(amount).send({from: account}).on("transactionHash", (hash) =>{
+                setIsLoading(false)
+            })
+        
+        setIsLoading(false)
+
+    }
 
     return (
         <div>
@@ -154,6 +165,7 @@ const App = () => {
                                         rwdBalance={rwdBalance} 
                                         stakingBalance={stakingBalance}
                                         stakeTokens={stakeTokens}
+                                        unstakeTokens={unstakeTokens}
                                         />
                                     </div>
                                 </main>
