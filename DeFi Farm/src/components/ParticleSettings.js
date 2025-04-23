@@ -11,7 +11,6 @@ const ParticleSettings = () => {
             options={{
                 fullScreen: {
                     enable: true,
-                    zIndex: -1,         // canvas goes behind page content
                 },
                 background:{
                     color:{
@@ -67,7 +66,7 @@ const ParticleSettings = () => {
                         enable:true,
                         outMode:"bounce",
                         random:false,
-                        speed:3,
+                        speed:1,
                         straight:false,
                     },
                     number:{
