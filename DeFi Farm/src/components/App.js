@@ -24,8 +24,6 @@ const App = () => {
     
     const [isLoading, setIsLoading] = useState(false);
 
-
-
     const loadWeb3 = async () => {
         if (window.ethereum) {
             const web3 = new Web3(window.ethereum)
@@ -80,36 +78,59 @@ const App = () => {
             window.alert("Error! Couldn't deploy Decentral Bank smart contract")
         }
     }
-    
-    // On mount: init web3 + account
+
     useEffect(() => {
-        const initWeb3 = async () => {
-          try {
-            const w3 = await loadWeb3()
-            setWeb3(w3)
-            const accounts = await w3.eth.getAccounts()
-            setAccount(accounts[0])
-          } catch (err) {
-            console.error("Web3 init failed:", err)
-          }
+        if (bank && account) {
+            checkIfOwner();
         }
-        initWeb3()
-      }, [])
-      
-      // Once we have web3 + userAccount: load contracts
-      useEffect(() => {
-        if (!web3 || !account) return
-        const initData = async () => {
+    }, [bank, account]);
+    
+    const checkIfOwner = async () => {
+        if (!bank || !account) return;
+    
+        try {
+            const contractOwner = await bank.methods.owner().call();
+            console.log("Connected account:", account);
+            console.log("Contract owner:", contractOwner);
+    
+            if (contractOwner.toLowerCase() === account.toLowerCase()) {
+                console.log("✅ This account is the contract owner.");
+            } else {
+                console.warn("❌ This account is NOT the contract owner.");
+            }
+        } catch (err) {
+            console.error("Error fetching contract owner:", err);
+        }
+    };
+    
+
+    useEffect(() => {
+        
+        const init = async () => {
           try {
-            await loadBlockchainData(web3, account)
+            //  Initialize Web3
+            setIsLoading(true)
+            const w3 = await loadWeb3();
+            setWeb3(w3);
+    
+            //  Get user account
+            const accounts = await w3.eth.getAccounts();
+            const user = accounts[0];
+            setAccount(user);
+    
+            //  Load contracts / blockchain data
+            await loadBlockchainData(w3, user);
+    
           } catch (err) {
-            console.error("Error initializing dApp:", err)
+            console.error("DApp initialization failed:", err);
           } finally {
-            setIsLoading(false)
+            setIsLoading(false);
           }
-        }
-        initData()
-      }, [web3, account])
+        };
+    
+        init();
+      }, []);
+      
 
 
     // Staking function
@@ -139,6 +160,27 @@ const App = () => {
         })
     }
 
+    const releaseTokens = async () => {
+
+        try {
+            console.log(account)
+            bank.methods.issueTokens().send({ from: account })
+                .on("transactionHash", (hash) => {
+                    console.log("Transaction sent with hash:", hash);
+                })
+                .on("receipt", (receipt) => {
+                    console.log("Transaction confirmed:", receipt);
+                })
+                .on("error", (error) => {
+                    console.error("Transaction failed:", error);
+                });
+    
+        } catch (err) {
+            console.error("Error calling issueTokens:", err);
+        }
+    };
+    
+
     return (
         <div className='App' style={{position:'relative'}}>
             <div style={{position:'absolute'}}>
@@ -161,12 +203,13 @@ const App = () => {
                                 <main role='main' className='col-lg-12 ml-auto mr-auto' style={{maxWidth:'600px', minHeight:'100vh'}}>
                                     <div>
                                         <Main
-                                        web3={web3} 
+                                        web3={web3}
                                         tetherBalance={tetherBalance} 
                                         rwdBalance={rwdBalance} 
                                         stakingBalance={stakingBalance}
                                         stakeTokens={stakeTokens}
                                         unstakeTokens={unstakeTokens}
+                                        releaseTokens={releaseTokens}
                                         />
                                     </div>
                                 </main>
