@@ -140,6 +140,7 @@ const App = () => {
         .send({ from: account })
         .on("transactionHash", (hash) => {
             bank.methods.deposit(amount).send({from: account}).on("transactionHash", (hash) => {
+                loadBlockchainData(web3, account);
                 setIsLoading(false)
             })
         })
@@ -157,6 +158,9 @@ const App = () => {
 
         bank.methods.withdraw(amount).send({from: account}).on("transactionHash", (hash) =>{
             setIsLoading(false)
+        }).on("transactionHash", (hash) => {
+            console.log("Transaction sent with hash:", hash);
+            loadBlockchainData(web3, account);
         })
     }
 
@@ -167,6 +171,7 @@ const App = () => {
             bank.methods.issueTokens().send({ from: account })
                 .on("transactionHash", (hash) => {
                     console.log("Transaction sent with hash:", hash);
+                    loadBlockchainData(web3, account);
                 })
                 .on("receipt", (receipt) => {
                     console.log("Transaction confirmed:", receipt);

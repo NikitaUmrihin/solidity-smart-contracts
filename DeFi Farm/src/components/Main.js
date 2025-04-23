@@ -17,13 +17,14 @@ const Main = ({ web3, tetherBalance, rwdBalance, stakingBalance, stakeTokens, un
         };
     };
 
-
     const countDown = () => {
         setSeconds(prev => {
           if (prev < 1) {
             clearInterval(timerRef.current);
             releaseTokens()
             setSeconds(15)
+            setTime(secondsToTime(15));    
+            timerRef.current = setInterval(countDown, 1000)                                
             return 0;
           }
           const next = prev - 1;
@@ -39,6 +40,10 @@ const Main = ({ web3, tetherBalance, rwdBalance, stakingBalance, stakeTokens, un
         }
         return () => clearInterval(timerRef.current);
       }, []);
+
+    useEffect(() => {
+    setTime(secondsToTime(seconds));
+    }, [seconds]);
 
     return (
         <div id="content" className="mt-4">
