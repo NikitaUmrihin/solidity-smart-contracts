@@ -42,7 +42,7 @@ contract DecentralBank {
     // Withdraw fUSDT from bank
     function withdraw(uint _amount) public {
         require(_amount > 0, "Amount has to be bigger than zero");
-        require(isStaking[msg.sender] = true, "User is not staking");
+        require(isStaking[msg.sender] == true, "User is not staking");
 
         uint balance = stakingBalance[msg.sender];
         require(balance > 0, "User is not staking");
